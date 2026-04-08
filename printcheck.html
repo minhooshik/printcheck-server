@@ -2,16 +2,31 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <script>
-        async function redirect() {
-            const res = await fetch("https://raw.githubusercontent.com/minhooshik/printcheck-server/main/server.json");
-            const data = await res.json();
-            window.location.href = data.url;
-        }
-        redirect();
-    </script>
+    <title>파일 상태 확인</title>
 </head>
-<body>
-    접속 중...
+<body style="text-align:center; margin-top:50px; font-family:Arial;">
+
+    <h2>파일 상태 확인</h2>
+
+    <button onclick="goServer()" style="font-size:18px; padding:10px 20px;">
+        접속하기
+    </button>
+
+    <p id="status" style="color:gray; margin-top:15px;"></p>
+
+    <script>
+        async function goServer() {
+            document.getElementById("status").innerText = "접속 중...";
+
+            try {
+                const res = await fetch("https://raw.githubusercontent.com/minhooshik/printcheck-server/main/server.json");
+                const data = await res.json();
+                window.location.href = data.url;
+            } catch {
+                document.getElementById("status").innerText = "접속 실패";
+            }
+        }
+    </script>
+
 </body>
 </html>
