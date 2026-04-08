@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script>
+        async function redirect() {
+            const res = await fetch("https://raw.githubusercontent.com/minhooshik/printcheck-server/main/server.json");
+            const data = await res.json();
+            window.location.href = data.url;
+        }
+        redirect();
+    </script>
+</head>
+<body>
+    접속 중...
+</body>
+</html>
