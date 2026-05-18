@@ -253,7 +253,7 @@ body {
 
 <script>
 function goCheck() {
-  location.href = '/check/';
+  location.href = '/check';
 }
 
 function openModal() {
@@ -277,7 +277,7 @@ async function confirm() {
   });
   const data = await res.json();
   if (data.ok) {
-    location.href = '/monitor/';
+    location.href = '/monitor';
   } else {
     const inp = document.getElementById('pwInput');
     inp.classList.add('error');
