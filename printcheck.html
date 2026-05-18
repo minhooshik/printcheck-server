@@ -1,290 +1,32 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>PRINT SYSTEM</title>
-<style>
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
-body {
-  min-height: 100vh;
-  background: #0f0f0f;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: -apple-system, 'Noto Sans KR', sans-serif;
-  padding: 24px;
-}
-
-.logo {
-  font-family: 'Courier New', monospace;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 4px;
-  color: #444;
-  margin-bottom: 48px;
-  text-transform: uppercase;
-}
-
-.logo span { color: #00ff88; }
-
-.cards {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  width: 100%;
-  max-width: 320px;
-}
-
-.card {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  border-radius: 16px;
-  padding: 24px 22px;
-  cursor: pointer;
-  transition: all 0.18s;
-  text-align: left;
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
-.card:active { transform: scale(0.97); }
-
-.card:hover {
-  border-color: #3a3a3a;
-  background: #202020;
-}
-
-.card .icon {
-  font-size: 28px;
-  margin-bottom: 10px;
-  display: block;
-}
-
-.card .title {
-  font-size: 17px;
-  font-weight: 700;
-  color: #e8e8e8;
-  margin-bottom: 4px;
-}
-
-.card .desc {
-  font-size: 12px;
-  color: #555;
-}
-
-.card .arrow {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #333;
-  font-size: 20px;
-}
-
-.card.green { border-color: #00ff8830; }
-.card.green:hover { border-color: #00ff8860; }
-.card.green .icon { filter: hue-rotate(0deg); }
-.card.green .badge {
-  position: absolute;
-  top: 16px; right: 16px;
-  background: #00ff8820;
-  color: #00ff88;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 20px;
-  letter-spacing: 1px;
-}
-
-.card.blue { border-color: #0071e330; }
-.card.blue:hover { border-color: #0071e360; }
-.card.blue .badge {
-  position: absolute;
-  top: 16px; right: 16px;
-  background: #0071e320;
-  color: #4da3ff;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 20px;
-  letter-spacing: 1px;
-}
-
-/* 비밀번호 모달 */
-.overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: #000000cc;
-  z-index: 100;
-  align-items: flex-end;
-  justify-content: center;
-}
-.overlay.show { display: flex; }
-
-.modal {
-  background: #1a1a1a;
-  border: 1px solid #2a2a2a;
-  border-radius: 24px 24px 0 0;
-  padding: 28px 24px 40px;
-  width: 100%;
-  max-width: 420px;
-  animation: slideUp 0.22s ease;
-}
-
-@keyframes slideUp {
-  from { transform: translateY(40px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
-}
-
-.modal h2 {
-  font-size: 17px;
-  font-weight: 700;
-  color: #e8e8e8;
-  margin-bottom: 6px;
-}
-
-.modal p {
-  font-size: 13px;
-  color: #555;
-  margin-bottom: 22px;
-}
-
-.pw-input {
-  width: 100%;
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 12px;
-  padding: 14px 16px;
-  font-size: 20px;
-  color: #e8e8e8;
-  letter-spacing: 6px;
-  text-align: center;
-  outline: none;
-  font-family: 'Courier New', monospace;
-  margin-bottom: 14px;
-  transition: border-color 0.2s;
-}
-
-.pw-input:focus { border-color: #0071e3; }
-.pw-input.error { border-color: #ff4444; animation: shake 0.3s; }
-
-@keyframes shake {
-  0%,100% { transform: translateX(0); }
-  25%      { transform: translateX(-8px); }
-  75%      { transform: translateX(8px); }
-}
-
-.modal-btns {
-  display: flex;
-  gap: 10px;
-}
-
-.btn-cancel {
-  flex: 1;
-  background: #222;
-  border: 1px solid #333;
-  border-radius: 12px;
-  padding: 14px;
-  color: #888;
-  font-size: 15px;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.btn-confirm {
-  flex: 2;
-  background: #0071e3;
-  border: none;
-  border-radius: 12px;
-  padding: 14px;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.btn-confirm:active { opacity: 0.85; }
-</style>
+    <meta charset="UTF-8">
+    <title>파일 상태 확인</title>
 </head>
-<body>
+<body style="text-align:center; margin-top:50px; font-family:Arial;">
 
-<div class="logo">PRINT <span>/</span> SYSTEM</div>
+    <h2>파일 상태 확인</h2>
 
-<div class="cards">
+    <button onclick="goServer()" style="font-size:18px; padding:10px 20px;">
+        접속하기
+    </button>
 
-  <!-- 상태체크 -->
-  <div class="card green" onclick="goCheck()">
-    <span class="icon">🖨️</span>
-    <div class="badge">OPEN</div>
-    <div class="title">출력 상태 체크</div>
-    <div class="desc">작업 파일 출력 진행 현황 조회</div>
-  </div>
+    <p id="status" style="color:gray; margin-top:15px;"></p>
 
-  <!-- 헤베계산 -->
-  <div class="card blue" onclick="openModal()">
-    <span class="icon">📐</span>
-    <div class="badge">🔒 PW</div>
-    <div class="title">출력 대기 현황</div>
-    <div class="desc">장비별 대기 물량 및 완료 예상 시간</div>
-  </div>
+    <script>
+        async function goServer() {
+            document.getElementById("status").innerText = "접속 중...";
 
-</div>
+            try {
+                const res = await fetch("https://raw.githubusercontent.com/minhooshik/printcheck-server/main/server.json");
+                const data = await res.json();
+                window.location.href = data.url;
+            } catch {
+                document.getElementById("status").innerText = "접속 실패";
+            }
+        }
+    </script>
 
-<!-- 비밀번호 모달 -->
-<div class="overlay" id="overlay" onclick="closeModal(event)">
-  <div class="modal">
-    <h2>비밀번호 확인</h2>
-    <p>출력 대기 현황 접속을 위해 비밀번호를 입력하세요</p>
-    <input class="pw-input" type="password" id="pwInput"
-           maxlength="20" placeholder="••••"
-           onkeydown="if(event.key==='Enter') confirm()">
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal()">취소</button>
-      <button class="btn-confirm" onclick="confirm()">확인</button>
-    </div>
-  </div>
-</div>
-
-<script>
-function goCheck() {
-  location.href = '/check';
-}
-
-function openModal() {
-  document.getElementById('overlay').classList.add('show');
-  setTimeout(() => document.getElementById('pwInput').focus(), 100);
-}
-
-function closeModal(e) {
-  if (e && e.target !== document.getElementById('overlay')) return;
-  document.getElementById('overlay').classList.remove('show');
-  document.getElementById('pwInput').value = '';
-  document.getElementById('pwInput').classList.remove('error');
-}
-
-async function confirm() {
-  const pw = document.getElementById('pwInput').value;
-  const res = await fetch('/api/verify-password', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ password: pw })
-  });
-  const data = await res.json();
-  if (data.ok) {
-    location.href = '/monitor';
-  } else {
-    const inp = document.getElementById('pwInput');
-    inp.classList.add('error');
-    inp.value = '';
-    setTimeout(() => inp.classList.remove('error'), 400);
-  }
-}
-</script>
 </body>
 </html>
