@@ -103,17 +103,19 @@
             status.className = "status";
             status.innerText = "접속 중...";
             try {
-                const res  = await fetch(GITHUB_JSON + "?t=" + Date.now(), { cache: "no-store" });
+                const res = await fetch(
+                    "https://raw.githubusercontent.com/minhooshik/printcheck-server/main/server.json",
+                    { cache: "no-store" }
+                );
                 const data = await res.json();
-                const base = data.printcheck_url;
-                if (!base) {
+                if (!data.monitor_url) {
                     status.className = "status error";
-                    status.innerText = "서버 주소를 찾을 수 없습니다. 서버가 실행 중인지 확인하세요.";
+                    status.innerText = "재고 서버 주소를 찾을 수 없습니다. 서버가 실행 중인지 확인하세요.";
                     return;
                 }
                 status.innerText = "연결 중...";
-                window.location.href = base.replace(/\/$/, "") + PATHS[roomKey];
-            } catch(e) {
+                window.location.href = data.monitor_url;
+            } catch (e) {
                 status.className = "status error";
                 status.innerText = "접속 실패 — 인터넷 연결을 확인하세요.";
             }
