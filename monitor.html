@@ -1,125 +1,168 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>출력 대기 현황</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body {
-            background:#0f0f13;
-            color:#e8e8f0;
-            font-family:'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-            min-height:100vh;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            justify-content:center;
-            gap:20px;
-            padding:30px;
-        }
-        .title {
-            font-size:22px;
-            font-weight:900;
-            background:linear-gradient(135deg,#00ff88,#00e5ff);
-            -webkit-background-clip:text;
-            -webkit-text-fill-color:transparent;
-            letter-spacing:-0.5px;
-        }
-        .sub {
-            font-size:13px;
-            color:#6b6b80;
-            text-align:center;
-        }
-        .btn-group {
-            display:flex;
-            flex-direction:column;
-            gap:14px;
-            width:100%;
-            max-width:300px;
-        }
-        .btn {
-            padding:16px 24px;
-            border-radius:16px;
-            border:none;
-            color:#fff;
-            font-size:16px;
-            font-weight:900;
-            cursor:pointer;
-            letter-spacing:-0.3px;
-            transition:transform 0.15s, opacity 0.15s;
-        }
-        .btn:active { transform:scale(0.96); opacity:0.9; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>출력 대기 현황 접속</title>
 
-        .btn-room1 {
-            background:linear-gradient(135deg,#4a90d9,#00e5ff);
-            box-shadow:0 8px 24px rgba(0,229,255,0.2);
-            opacity:0.4;
-            cursor:not-allowed;
-        }
-        .btn-room3 {
-            background:linear-gradient(135deg,#00ff88,#00c853);
-            box-shadow:0 8px 24px rgba(0,255,136,0.25);
-            color:#003320;
-        }
-        .status {
-            font-size:13px;
-            color:#6b6b80;
-            min-height:20px;
-            text-align:center;
-        }
-        .status.error { color:#ff5252; }
-    </style>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+body{
+    background:#0f1117;
+    color:#ffffff;
+    font-family:-apple-system,BlinkMacSystemFont,'맑은 고딕',sans-serif;
+
+    min-height:100vh;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+}
+
+.wrap{
+    width:100%;
+    max-width:340px;
+}
+
+.title{
+    text-align:center;
+    margin-bottom:12px;
+    font-size:28px;
+    font-weight:800;
+    letter-spacing:-1px;
+}
+
+.sub{
+    text-align:center;
+    color:#9aa4b2;
+    font-size:14px;
+    margin-bottom:28px;
+}
+
+.group{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.btn{
+    border:none;
+    border-radius:18px;
+
+    padding:18px 20px;
+
+    font-size:17px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.15s;
+}
+
+.btn:active{
+    transform:scale(0.97);
+}
+
+.btn.disabled{
+    background:#2a2f38;
+    color:#777;
+    cursor:not-allowed;
+}
+
+.btn.room3{
+    background:linear-gradient(135deg,#00ff88,#00c853);
+    color:#002b17;
+    box-shadow:0 8px 24px rgba(0,255,136,0.25);
+}
+
+.status{
+    margin-top:24px;
+    text-align:center;
+    font-size:13px;
+    color:#8b95a1;
+    min-height:20px;
+}
+
+.status.error{
+    color:#ff5c5c;
+}
+</style>
 </head>
+
 <body>
+
+<div class="wrap">
+
     <div class="title">🖨️ 출력 대기 현황</div>
     <div class="sub">출력실을 선택하세요</div>
 
-    <div class="btn-group">
-        <!-- 1출력실: 준비 중 -->
-        <button class="btn btn-room1" disabled>
-            1출력실&nbsp;&nbsp;준비 중
+    <div class="group">
+
+        <!-- 준비중 -->
+        <button class="btn disabled" disabled>
+            1출력실 준비중
         </button>
 
-        <!-- 3출력실: 운영 중 -->
-        <button class="btn btn-room3" onclick="goRoom('room3')">
+        <!-- 운영중 -->
+        <button class="btn room3" onclick="goRoom3()">
             3출력실 출력대기현황
         </button>
+
     </div>
 
     <div class="status" id="status"></div>
 
-    <script>
-        const GITHUB_JSON = "https://raw.githubusercontent.com/minhooshik/printcheck-server/main/server.json";
+</div>
 
-        // 출력실별 경로 (printcheck_url 뒤에 붙음)
-        const PATHS = {
-            room1: "/monitor1/",   // 추후 사용
-            room3: "/monitor/",
-        };
+<script>
 
-        async function goRoom(roomKey) {
-            const status = document.getElementById("status");
-            status.className = "status";
-            status.innerText = "접속 중...";
-            try {
-                const res = await fetch(
-                    "https://raw.githubusercontent.com/minhooshik/printcheck-server/main/server.json",
-                    { cache: "no-store" }
-                );
-                const data = await res.json();
-                if (!data.monitor_url) {
-                    status.className = "status error";
-                    status.innerText = "재고 서버 주소를 찾을 수 없습니다. 서버가 실행 중인지 확인하세요.";
-                    return;
-                }
-                status.innerText = "연결 중...";
-                window.location.href = data.monitor_url;
-            } catch (e) {
-                status.className = "status error";
-                status.innerText = "접속 실패 — 인터넷 연결을 확인하세요.";
-            }
+const SERVER_JSON =
+"https://raw.githubusercontent.com/minhooshik/printcheck-server/main/server.json";
+
+async function goRoom3(){
+
+    const status = document.getElementById("status");
+
+    status.className = "status";
+    status.innerText = "서버 확인 중...";
+
+    try{
+
+        const res = await fetch(
+            SERVER_JSON,
+            { cache:"no-store" }
+        );
+
+        const data = await res.json();
+
+        if(!data.monitor_url){
+
+            status.className = "status error";
+            status.innerText = "monitor_url 값을 찾을 수 없습니다.";
+            return;
         }
-    </script>
+
+        status.innerText = "연결 중...";
+
+        window.location.href = data.monitor_url;
+
+    }catch(e){
+
+        status.className = "status error";
+        status.innerText = "접속 실패 · 인터넷 또는 서버 상태를 확인하세요.";
+
+    }
+}
+
+</script>
+
 </body>
 </html>
