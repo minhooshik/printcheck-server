@@ -51,21 +51,17 @@
         }
         .btn:active { transform:scale(0.96); opacity:0.9; }
 
-        /* 1출력실 - 파랑 (준비 중) */
         .btn-room1 {
             background:linear-gradient(135deg,#4a90d9,#00e5ff);
             box-shadow:0 8px 24px rgba(0,229,255,0.2);
             opacity:0.4;
             cursor:not-allowed;
         }
-
-        /* 3출력실 - 초록 */
         .btn-room3 {
             background:linear-gradient(135deg,#00ff88,#00c853);
             box-shadow:0 8px 24px rgba(0,255,136,0.25);
             color:#003320;
         }
-
         .status {
             font-size:13px;
             color:#6b6b80;
@@ -94,9 +90,12 @@
     <div class="status" id="status"></div>
 
     <script>
-        const URL_KEYS = {
-            room1: "monitor_url_room1",
-            room3: "monitor_url_room3",
+        const GITHUB_JSON = "https://raw.githubusercontent.com/minhooshik/printcheck-server/main/server.json";
+
+        // 출력실별 경로 (printcheck_url 뒤에 붙음)
+        const PATHS = {
+            room1: "/monitor1/",   // 추후 사용
+            room3: "/monitor/",
         };
 
         async function goRoom(roomKey) {
@@ -104,19 +103,16 @@
             status.className = "status";
             status.innerText = "접속 중...";
             try {
-                const res  = await fetch(
-                    "https://raw.githubusercontent.com/minhooshik/printcheck-server/main/server.json",
-                    { cache: "no-store" }
-                );
+                const res  = await fetch(GITHUB_JSON + "?t=" + Date.now(), { cache: "no-store" });
                 const data = await res.json();
-                const url  = data[URL_KEYS[roomKey]];
-                if (!url) {
+                const base = data.printcheck_url;
+                if (!base) {
                     status.className = "status error";
                     status.innerText = "서버 주소를 찾을 수 없습니다. 서버가 실행 중인지 확인하세요.";
                     return;
                 }
                 status.innerText = "연결 중...";
-                window.location.href = url;
+                window.location.href = base.replace(/\/$/, "") + PATHS[roomKey];
             } catch(e) {
                 status.className = "status error";
                 status.innerText = "접속 실패 — 인터넷 연결을 확인하세요.";
