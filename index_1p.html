@@ -90,7 +90,7 @@ async function load(){
 
     try{
 
-        const res = await fetch('/api/status/1p');
+        const res = await fetch('http://112.218.160.210:5100/api/status/1p');
         const data = await res.json();
 
         document.getElementById('topInfo').innerHTML =
