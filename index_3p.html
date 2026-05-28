@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>3출력실</title>
+
+<style>
+
+body{
+    margin:0;
+    background:#f3f4f7;
+    font-family:'Malgun Gothic',sans-serif;
+}
+
+.top{
+    background:white;
+    padding:14px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.08);
+}
+
+.title{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.info{
+    margin-top:4px;
+    color:#666;
+    font-size:13px;
+}
+
+.wrap{
+    padding:10px;
+}
+
+.card{
+    background:white;
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:10px;
+    box-shadow:0 1px 4px rgba(0,0,0,0.08);
+}
+
+.machine{
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    margin:4px 0;
+    font-size:15px;
+}
+
+.label{
+    color:#666;
+}
+
+.value{
+    font-weight:bold;
+}
+
+</style>
+</head>
+<body>
+
+<div class="top">
+    <div class="title">3출력실 모니터</div>
+    <div class="info" id="topInfo">불러오는 중...</div>
+</div>
+
+<div class="wrap" id="list"></div>
+
+<script>
+
+function createRow(label,value){
+    return `
+        <div class="row">
+            <div class="label">${label}</div>
+            <div class="value">${value}</div>
+        </div>
+    `;
+}
+
+async function load(){
+
+    try{
+
+        const res = await fetch('/api/status/3p');
+        const data = await res.json();
+
+        document.getElementById('topInfo').innerHTML =
+            `장비수 : ${data.printer_count} / 마지막갱신 : ${data.last_update}`;
+
+        const printers = data.printers || {};
+
+        const list = document.getElementById('list');
+        list.innerHTML = "";
+
+        for(const [name,p] of Object.entries(printers)){
+
+            const div = document.createElement('div');
+            div.className = "card";
+
+            div.innerHTML = `
+                <div class="machine">${name}</div>
+
+                ${createRow(
+                    "오늘",
+                    `${p.today_sqm}㎡ / ${p.today_time} / ${p.today_finish}`
+                )}
+
+                ${createRow(
+                    "LAST",
+                    `${p.last_sqm}㎡ / ${p.last_time}`
+                )}
+
+                ${createRow(
+                    "전체",
+                    `${p.total_sqm}㎡ / ${p.total_time}`
+                )}
+            `;
+
+            list.appendChild(div);
+        }
+
+    }catch(e){
+
+        document.getElementById('topInfo').innerHTML =
+            '서버 연결 실패';
+
+    }
+}
+
+load();
+setInterval(load,5000);
+
+</script>
+
+</body>
+</html>
