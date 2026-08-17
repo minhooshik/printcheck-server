@@ -115,12 +115,6 @@
             box-shadow:0 8px 24px rgba(255,100,0,0.2);
         }
 
-        .btn-intracheck{
-            background:linear-gradient(135deg,#7a5cff,#5b3dff);
-            color:#ffffff;
-            box-shadow:0 8px 24px rgba(120,80,255,0.2);
-        }
-
         .status{
             min-height:20px;
             font-size:13px;
@@ -160,10 +154,6 @@
             3출력실 모니터
         </button>
 
-        <button class="btn btn-intracheck" onclick="goPage('intracheck')">
-            🔒 인트라넷 체크
-        </button>
-
         <div class="status" id="status"></div>
 
     </div>
@@ -175,10 +165,9 @@
 
         // key 매핑: 버튼 → server.json 필드
         const KEY_MAP = {
-            check:     ["check2_url", "url", "printcheck_url"],
-            monitor1:  ["monitor1_url"],
-            monitor3:  ["monitor3_url"],
-            intracheck:["intranet_check_url"],
+            check:    ["url", "printcheck_url"],
+            monitor1: ["monitor1_url"],
+            monitor3: ["monitor3_url"],
         };
 
         async function goPage(type){
